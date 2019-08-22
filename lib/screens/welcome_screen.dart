@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/fcm_message_service.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -6,6 +7,13 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  FcmMessageService _fcmMessageService = new FcmMessageService();
+  @override
+  void initState() {
+    super.initState();
+    _fcmMessageService.firebaseCloudMessaging_Listeners(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;

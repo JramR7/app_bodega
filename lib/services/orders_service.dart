@@ -7,7 +7,7 @@ class OrdersService {
   static Dio dio = new Dio();
 
   static postOrder(_image, _imageName) async {
-    var postUrl = 'http://${Constants.httpUrl}/images';
+    var postUrl = 'https://${Constants.httpUrl}/images';
     FormData formData = new FormData.from({
       "image[image]": new UploadFileInfo(_image, _image.path),
       "image[name]": _imageName,
@@ -22,7 +22,7 @@ class OrdersService {
   }
 
   static Future<dynamic> getOrders() async {
-    final response = await http.get('http://${Constants.httpUrl}/images');
+    final response = await http.get('https://${Constants.httpUrl}/images');
 
     if (response.statusCode == 200) {
       // If server returns an OK response, parse the JSON.
@@ -35,7 +35,7 @@ class OrdersService {
 
   static Future<dynamic> updateOrderStatus(orderId, state) async {
     FormData formData = new FormData.from({"image[state]": state});
-    var putUrl = 'http://${Constants.httpUrl}/images/$orderId';
+    var putUrl = 'https://${Constants.httpUrl}/images/$orderId';
 
     await dio.put(putUrl, data: formData).then((response) {
       print(response);
@@ -46,7 +46,7 @@ class OrdersService {
   }
 
   static Future<dynamic> updateOrderImage(imageFile, order) async {
-    var putUrl = 'http://${Constants.httpUrl}/images/${order['id']}';
+    var putUrl = 'https://${Constants.httpUrl}/images/${order['id']}';
     FormData formData = new FormData.from({
       "image[image]": new UploadFileInfo(imageFile, imageFile.path),
     });

@@ -6,9 +6,7 @@ import 'dart:convert';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'dart:io';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import '../services/fcm_message_service.dart';
 
 class SeeOrdersScreen extends StatefulWidget {
   @override
@@ -16,7 +14,7 @@ class SeeOrdersScreen extends StatefulWidget {
 }
 
 class _SeeOrdersScreenState extends State<SeeOrdersScreen> {
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  FcmMessageService _fcmMessageService = new FcmMessageService();
   final channel =
       IOWebSocketChannel.connect('ws://${Constants.httpUrl}/cable/');
   var _data = [];
@@ -33,40 +31,7 @@ class _SeeOrdersScreenState extends State<SeeOrdersScreen> {
     ]);
     WidgetsBinding.instance.addPostFrameCallback(
         (_) => OrdersService.startConnection(channel, 'RoomImageChannel'));
-    firebaseCloudMessaging_Listeners();
-  }
-
-  void firebaseCloudMessaging_Listeners() {
-    _firebaseMessaging.subscribeToTopic('global');
-
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                content: ListTile(
-                  title: Text(message['notification']['title']),
-                  subtitle: Text(message['notification']['body']),
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text('Ok'),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
-              ),
-        );
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-        // TODO optional
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-        // TODO optional
-      },
-    );
+    _fcmMessageService.firebaseCloudMessaging_Listeners(context);
   }
 
   // reset screen orientation
